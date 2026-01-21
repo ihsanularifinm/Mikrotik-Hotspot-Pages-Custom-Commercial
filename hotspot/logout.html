@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+	<head data-i18n-title="page_logout">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<title>Internet Hotspot - Log out</title>
+		<link href="css/style.css" rel="stylesheet" />
+		<script>
+			function openLogin() {
+				if (window.name != 'hotspot_logout') return true;
+				open('https://$(hostname)/login', '_blank', '');
+				window.close();
+				return false;
+			}
+		</script>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300 min-h-screen flex flex-col">
+		<!-- Sticky Navbar with Toggle Buttons -->
+		<header class="fixed top-0 w-full px-4 py-2 flex justify-end gap-2 bg-gray-100 dark:bg-gray-900 z-10">
+			<!-- Language Toggle -->
+			<button id="lang-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm w-10 h-10 flex items-center justify-center">
+				<span id="lang-icon-en" class="font-bold text-xs">EN</span>
+				<span id="lang-icon-id" class="hidden font-bold text-xs">ID</span>
+			</button>
+			<!-- Theme Toggle -->
+			<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm w-10 h-10 flex items-center justify-center">
+				<!-- Heroicons: Moon (solid) - for dark mode -->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-dark-icon">
+					<path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd" />
+				</svg>
+				<!-- Heroicons: Sun (solid) - for light mode -->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-light-icon">
+					<path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
+				</svg>
+			</button>
+		</header>
+
+		<div class="flex-1 flex items-center justify-center p-4">
+			<div class="w-full max-w-sm">
+				<div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 py-6">
+					<h1 class="text-xl font-bold text-center mb-4 text-gray-800 dark:text-gray-200" data-i18n="logout_title">You have just logged out!</h1>
+
+					<table class="w-full text-sm mb-6">
+						<tbody>
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="username_label">Username</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(username)</td>
+							</tr>
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="ip_address">IP address</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(ip)</td>
+							</tr>
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="mac_address">MAC address</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(mac)</td>
+							</tr>
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="session_time">Session time</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(uptime)</td>
+							</tr>
+							$(if session-time-left)
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="time_left">Time left</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(session-time-left)</td>
+							</tr>
+							$(endif)
+							<tr class="border-b border-gray-200 dark:border-gray-700">
+								<td class="font-semibold pr-4 py-2 text-gray-600 dark:text-gray-400 text-right" data-i18n="bytes_up_down">Bytes up / down</td>
+								<td class="py-2 text-gray-800 dark:text-gray-200">$(bytes-in-nice) / $(bytes-out-nice)</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- Log in button -->
+					<form action="https://$(hostname)/login" name="login" onSubmit="return openLogin()" class="mt-4">
+						<input type="submit" data-i18n-value="logout_login_btn" value="Log in" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer" />
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/config.js"></script>
+		<script src="js/app.js"></script>
+	</body>
+</html>
