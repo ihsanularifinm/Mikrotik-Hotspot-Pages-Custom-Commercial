@@ -32,7 +32,7 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 - **Default Mode Gelap**: Secara otomatis menampilkan tema gelap untuk pengunjung baru untuk kenyamanan mata.
 - **Tampilkan/Sembunyikan Password**: Memudahkan pengguna saat mengetik password di perangkat mobile.
 - **Responsif**: Tampilan optimal di perangkat desktop maupun mobile.
-- **Heroicons**: Menggunakan icon dari [Heroicons](https://Heroicons.com/) - library icon official dari tim Tailwind CSS.
+- **Heroicons**: Menggunakan icon dari [Heroicons](https://heroicons.com/) - library icon official dari tim Tailwind CSS.
 - **Ringan & Cepat**: Tidak menggunakan jQuery atau framework JavaScript berat lainnya, hanya Vanilla JavaScript murni.
 - **Kompatibilitas Penuh**: Tetap mempertahankan semua variabel dan logika asli dari MikroTik Hotspot.
 
