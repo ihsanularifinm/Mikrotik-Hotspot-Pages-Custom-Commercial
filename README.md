@@ -32,7 +32,7 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 - **Default Mode Gelap**: Secara otomatis menampilkan tema gelap untuk pengunjung baru untuk kenyamanan mata.
 - **Tampilkan/Sembunyikan Password**: Memudahkan pengguna saat mengetik password di perangkat mobile.
 - **Responsif**: Tampilan optimal di perangkat desktop maupun mobile.
-- **Heroicons**: Menggunakan icon dari [Heroicons](https://heroicons.com/) - library icon official dari tim Tailwind CSS.
+- **Heroicons**: Menggunakan icon dari [Heroicons](https://Heroicons.com/) - library icon official dari tim Tailwind CSS.
 - **Ringan & Cepat**: Tidak menggunakan jQuery atau framework JavaScript berat lainnya, hanya Vanilla JavaScript murni.
 - **Kompatibilitas Penuh**: Tetap mempertahankan semua variabel dan logika asli dari MikroTik Hotspot.
 
@@ -89,7 +89,7 @@ Pengguna dapat mengganti bahasa dengan menekan tombol **EN/ID** di pojok kanan a
 ## 🛠️ Teknologi yang Digunakan
 
 - [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
-- [Heroicons](https://heroicons.com/) - Beautiful hand-crafted SVG icons
+- [Heroicons](https://Heroicons.com/) - Beautiful hand-crafted SVG icons
 - Vanilla JavaScript - Untuk fungsionalitas interaktif (toggle tema, bahasa, dan password)
 
 ## ⚙️ Cara Penggunaan (Instalasi)
@@ -161,4 +161,4 @@ Kemudian di HTML, gunakan atribut `data-i18n`:
 - Desain dikembangkan dari awal tetapi terinspirasi dari templat hotspot default MikroTik.
 - Template asli referensi: [ihsanularifinm/MikroTik-Hotspot-Pages-Default](https://github.com/ihsanularifinm/MikroTik-Hotspot-Pages-Default)
 - Library QR Code: [html5-qrcode](https://github.com/mebjas/html5-qrcode) by mebjas
-- Icons: [Heroicons](https://heroicons.com/) by Tailwind CSS team
+- Icons: [Heroicons](https://Heroicons.com/) by Tailwind CSS team
