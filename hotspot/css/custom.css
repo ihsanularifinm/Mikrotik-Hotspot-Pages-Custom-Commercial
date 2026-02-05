@@ -1,0 +1,95 @@
+/**
+ * custom.css - Custom Styles for Hotspot Pages
+ * This file contains custom CSS that supplements Tailwind CSS
+ * Include this after style.css in all HTML files
+ */
+
+/* ===========================
+   SCROLLBAR HIDING
+   =========================== */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ===========================
+   GLOBAL POINTER FOR CLICKABLES
+   =========================== */
+.cursor-pointer,
+[onclick],
+button,
+a {
+    cursor: pointer !important;
+}
+
+/* ===========================
+   TAILWIND COLOR FALLBACKS
+   (For purged CSS safety)
+   =========================== */
+
+/* Yellow */
+.bg-yellow-50 { background-color: #fefce8 !important; }
+.text-yellow-600 { color: #ca8a04 !important; }
+.border-yellow-500 { border-color: #eab308 !important; }
+
+/* Green */
+.bg-green-50 { background-color: #f0fdf4 !important; }
+.text-green-600 { color: #16a34a !important; }
+.border-green-500 { border-color: #22c55e !important; }
+
+/* Purple */
+.bg-purple-50 { background-color: #faf5ff !important; }
+.text-purple-600 { color: #9333ea !important; }
+.border-purple-500 { border-color: #a855f7 !important; }
+
+/* Blue (Explicit override) */
+.border-blue-500 { border-color: #3b82f6 !important; }
+
+/* ===========================
+   DARK MODE OVERRIDES
+   =========================== */
+.dark .dark\:bg-yellow-900\/20 { background-color: rgba(113, 63, 18, 0.2) !important; }
+.dark .dark\:text-yellow-400 { color: #facc15 !important; }
+
+.dark .dark\:bg-green-900\/20 { background-color: rgba(20, 83, 45, 0.2) !important; }
+.dark .dark\:text-green-400 { color: #4ade80 !important; }
+
+.dark .dark\:bg-purple-900\/20 { background-color: rgba(88, 28, 135, 0.2) !important; }
+.dark .dark\:text-purple-400 { color: #c084fc !important; }
+
+/* ===========================
+   SAFE AREA PADDING (iOS)
+   =========================== */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ===========================
+   ANIMATION UTILITIES
+   =========================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
