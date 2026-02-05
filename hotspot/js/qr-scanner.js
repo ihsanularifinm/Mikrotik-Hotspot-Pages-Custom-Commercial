@@ -9,6 +9,7 @@ let isScanning = false;
 
 const placeholderHTML = `
 <div class="text-gray-400 dark:text-gray-600 flex flex-col items-center animate-pulse">
+    <!-- Heroicons: qr-code (outline) -->
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-32 w-32 opacity-50">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
@@ -168,18 +169,20 @@ function startQRScanner() {
     // If modal was removed, recreate it
     if (!scannerModal) {
         const modalHTML = `
-                <div id="qr-scanner-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div id="qr-scanner-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
                 <div class="bg-white dark:bg-gray-800 rounded-lg max-w-sm w-full p-4 shadow-2xl relative">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200" data-i18n="scan_qr_title">Scan QR Code</h3>
-                        <button id="qr-scanner-close" type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-50 relative cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <button id="qr-scanner-close" type="button" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-red-500 transition-colors">
+                            <!-- Heroicons: x-mark (outline) - close modal -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-5 w-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
                     <div id="qr-scanner-container" class="w-full aspect-square bg-gray-100 dark:bg-gray-900/50 rounded-md overflow-hidden flex items-center justify-center relative border-2 border-dashed border-gray-300 dark:border-gray-600">
                         <div class="text-gray-400 dark:text-gray-600 flex flex-col items-center animate-pulse">
+                            <!-- Heroicons: qr-code (outline) -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-32 w-32 opacity-50">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
@@ -189,12 +192,14 @@ function startQRScanner() {
                     <p id="qr-scan-status" class="text-center text-gray-500 dark:text-gray-400 my-2 text-sm" data-i18n="scanning">Point camera at QR code...</p>
                     <div class="flex flex-col gap-2">
                         <button type="button" id="btn-toggle-camera" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none flex items-center justify-center gap-2 cursor-pointer">
+                            <!-- Heroicons: video-camera (outline) -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
                             </svg>
                             <span id="txt-toggle-camera" data-i18n="btn_start_camera">Start Camera</span>
                         </button>
                         <button type="button" id="btn-upload-qr" class="w-full bg-gray-200 dark:bg-gray-700/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-xl transition-all duration-200 border border-gray-400 dark:border-gray-600 border-dashed hover:border-gray-500 dark:hover:border-gray-500 flex items-center justify-center gap-2 cursor-pointer">
+                            <!-- Heroicons: photo (outline) -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                             </svg>
@@ -297,6 +302,7 @@ function startQRScanner() {
                             <div class="absolute inset-0 z-10 flex flex-col items-center justify-center p-4 text-center" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
                                 <div class="mb-2 flex justify-center">
                                     <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-full shadow-sm">
+                                        <!-- Heroicons: check-circle (outline) -->
                                         <svg class="w-6 h-6 text-green-600 dark:text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -308,6 +314,7 @@ function startQRScanner() {
                                 
                                 <button id="btn-open-external" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-green-500/30 transition-all hover:scale-105 flex items-center justify-center gap-2 group mb-1 cursor-pointer">
                                     <span>${getTranslation('btn_open_scanner') || 'Open Scanner'}</span>
+                                    <!-- Heroicons: arrow-right (outline) -->
                                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                     </svg>
@@ -389,6 +396,7 @@ function startQRScanner() {
                      // Render Loading State
                      container.innerHTML = `
                          <div class="flex flex-col items-center justify-center h-full text-gray-500 cursor-wait">
+                             <!-- Spinner (Custom SVG) -->
                              <svg class="animate-spin h-10 w-10 text-blue-600 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -768,28 +776,38 @@ function getTranslation(key) {
 document.addEventListener('DOMContentLoaded', function() {
     // Check Configuration
     if (typeof hotspotConfig !== 'undefined' && hotspotConfig.enableQRCode === false) {
-        // Feature disabled - hide the button
-        const scanBtn = document.getElementById('scan-qr-btn');
-        if (scanBtn) {
-            // scanBtn.style.display = 'none'; 
-            // Better to use Tailwind class if available, or style
-            scanBtn.classList.add('hidden');
-        }
+        // Feature disabled - use MutationObserver to hide button when it's injected
+        const hideQRButton = () => {
+            const scanBtn = document.getElementById('scan-qr-btn');
+            if (scanBtn) {
+                scanBtn.parentElement.classList.add('hidden'); // Hide wrapper
+            }
+            const divEl = document.getElementById('qr-divider');
+            if (divEl) {
+                divEl.classList.add('hidden');
+            }
+        };
         
-        // Also hide the divider
-        const divEl = document.getElementById('qr-divider');
-        if (divEl) {
-            divEl.classList.add('hidden');
-        }
-
+        // Try immediately
+        hideQRButton();
+        
+        // Also observe for dynamic injection
+        const observer = new MutationObserver(() => {
+            hideQRButton();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        
         return; // Do not initialize scanner
     }
 
-    // Add click handler for scan button
-    const scanBtn = document.getElementById('scan-qr-btn');
-    if (scanBtn) {
-        scanBtn.addEventListener('click', startQRScanner);
-    }
+    // Use event delegation for scan button (works even if button is injected later by navbars.js)
+    document.body.addEventListener('click', function(e) {
+        const scanBtn = e.target.closest('#scan-qr-btn');
+        if (scanBtn) {
+            e.preventDefault();
+            startQRScanner();
+        }
+    });
     
     // Note: Close button and background click handlers are now attached 
     // in initQRControls() which runs on every modal open/recreation

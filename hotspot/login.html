@@ -1,327 +1,398 @@
 <!DOCTYPE html>
-<html lang="en" class="">
-	<head data-i18n-title="page_login">
-		<meta charset="utf-8" />
-		<meta http-equiv="pragma" content="no-cache" />
-		<meta http-equiv="expires" content="-1" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Internet Hotspot - Log in</title>
-		<link href="css/style.css" rel="stylesheet" />
-	</head>
-	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300 min-h-screen flex flex-col">
-		<!-- Sticky Navbar with Toggle Buttons -->
-		<header class="fixed top-0 w-full px-4 py-2 flex justify-end gap-2 bg-gray-100 dark:bg-gray-900 z-10">
-			<!-- Language Toggle -->
-			<button id="lang-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm w-10 h-10 flex items-center justify-center cursor-pointer">
-				<span id="lang-icon-en" class="font-bold text-xs">EN</span>
-				<span id="lang-icon-id" class="hidden font-bold text-xs">ID</span>
-			</button>
-			<!-- Theme Toggle -->
-			<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm w-10 h-10 flex items-center justify-center cursor-pointer">
-				<!-- Heroicons: Moon (solid) - for dark mode -->
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-dark-icon">
-					<path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd" />
-				</svg>
-				<!-- Heroicons: Sun (solid) - for light mode -->
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-light-icon">
-					<path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
-				</svg>
-			</button>
-		</header>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n-title="page_login">Internet Hotspot - Log in</title>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    
+    <!-- Hidden MikroTik Status Form (Required for Login Logic) -->
+    <div style="display:none; visibility:hidden;">
+        $(if chap-id)
+        <form name="sendin" action="$(link-login-only)" method="post">
+            <input type="hidden" name="username" />
+            <input type="hidden" name="password" />
+            <input type="hidden" name="dst" value="$(link-orig)" />
+            <input type="hidden" name="popup" value="true" />
+        </form>
+        <script src="md5.js"></script>
+        <script>
+            function doLogin() {
+                var creds = (typeof window.getLoginValues === 'function') 
+                            ? window.getLoginValues() 
+                            : {username: document.login.username.value, password: document.login.password.value};
 
-		$(if chap-id)
-		<form name="sendin" action="https://$(hostname)/login" method="post" style="display: none">
-			<input type="hidden" name="username" />
-			<input type="hidden" name="password" />
-			<input type="hidden" name="dst" value="$(link-orig)" />
-			<input type="hidden" name="popup" value="true" />
-		</form>
-		$(endif)
+                document.sendin.username.value = creds.username;
+                document.sendin.password.value = hexMD5('$(chap-id)' + creds.password + '$(chap-challenge)');
+                document.sendin.submit();
+                return false;
+            }
+        </script>
+        $(endif)
+    </div>
 
-		<div class="flex-1 flex items-center justify-center p-4">
-			<div class="w-full max-w-sm">
-				<form name="login" action="https://$(hostname)/login" method="post" class="bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4" onSubmit="return prepareSubmit()">
-					<input type="hidden" name="dst" value="$(link-orig)" />
-					<input type="hidden" name="popup" value="true" />
+    <!-- Navbar & Sections Config -->
+    <script>
+        window.navbarConfig = { 
+            topNavbar: true, 
+            bottomNavbar: true, 
+            showQRButton: true
+        };
+        window.sectionsConfig = { 
+            showSlideshow: true, 
+            showVoucherList: true, 
+            showFooter: true
+        };
+    </script>
+    
+    <!-- Header & Toast will be injected by navbars.js -->
 
-					<div class="mb-6 text-center"><img id="main-logo" src="img/smart-home.svg" alt="Smart Home Icon" class="w-24 inline-block fill-current dark:invert" /></div>
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="pt-16 px-4 max-w-md mx-auto space-y-6 pb-32">
 
-					<p class="text-center text-sm mb-4 text-gray-600 dark:text-gray-200"><span data-i18n="login_prompt">Please log in to use the internet hotspot service.</span> $(if trial == 'yes')<br /><span data-i18n="login_trial">Free trial available,</span> <a href="https://$(hostname)/login?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)" class="font-semibold text-blue-500 hover:underline dark:text-blue-400" data-i18n="login_trial_link">click here</a>.$(endif)</p>
-					$(if error)<p class="text-center text-sm mb-4 text-red-500 dark:text-red-400" data-i18n-error>$(error)</p>$(endif)
+        <!-- SLIDESHOW (Injected by sections.js) -->
+        <div id="slideshow-placeholder"></div>
 
-					<!-- Login Mode Tabs -->
-					<div class="flex border-b border-gray-300 dark:border-gray-600 mb-4">
-						<button type="button" id="tab-dual" class="flex-1 py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none cursor-pointer" onclick="switchLoginMode('dual')">
-							<span data-i18n="tab_dual">User & Password</span>
-						</button>
-						<button type="button" id="tab-single" class="flex-1 py-2 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent focus:outline-none cursor-pointer" onclick="switchLoginMode('single')">
-							<span data-i18n="tab_single">User = Password</span>
-						</button>
-					</div>
+        <!-- 3. LOGIN CARD (Restored & Cleaned - No Logo) -->
+        <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden mb-4">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+            
+            <div class="mb-6 text-center">
+                 <h3 id="login-title" class="text-lg font-bold">Login Voucher</h3>
+                 
+                 <!-- Error Log Alert -->
+                 $(if error)
+                 <div class="mt-3 p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs rounded-lg flex items-center gap-2">
+                    <!-- Heroicons: exclamation-circle (mini) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 shrink-0">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>$(error)</span>
+                 </div>
+                 $(endif)
+            </div>
 
-					<!-- Dual Input Mode (User & Password) - DEFAULT -->
-					<div id="mode-dual">
-						<div class="mb-4 relative">
-							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								<!-- Heroicons: User (solid) -->
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
-									<path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
-								</svg>
-							</span>
-							<input id="username-input" name="username" type="text" value="$(username)" data-i18n-placeholder="username_placeholder" placeholder="Username" class="w-full pl-10 pr-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" autocapitalize="none" />
-						</div>
+            <!-- Hidden Form for CHAP Login (replicated from Custom-Home logic) -->
+            $(if chap-id)
+            <form name="sendin" action="$(link-login-only)" method="post" style="display: none">
+                <input type="hidden" name="username" />
+                <input type="hidden" name="password" />
+                <input type="hidden" name="dst" value="$(link-orig)" />
+                <input type="hidden" name="popup" value="true" />
+            </form>
+            $(endif)
 
-						<div class="mb-6 relative">
-							<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-								<!-- Heroicons: Key (solid) -->
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
-									<path fill-rule="evenodd" d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z" clip-rule="evenodd" />
-								</svg>
-							</span>
-							<input id="password-input-dual" name="password" type="password" data-i18n-placeholder="password_placeholder" placeholder="Password" class="w-full pl-10 pr-10 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-							<button type="button" id="toggle-password-btn-dual" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-								<!-- Heroicons: Eye Slash (outline) - hide password -->
-								<svg id="eye-icon-hide-dual" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-								</svg>
-								<!-- Heroicons: Eye (outline) - show password -->
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden h-5 w-5 text-gray-500 dark:text-gray-400" id="eye-icon-show-dual">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-								</svg>
-							</button>
-						</div>
-					</div>
+            <form name="login" action="$(link-login-only)" method="post" onSubmit="return prepareSubmit()">
+                <input type="hidden" name="dst" value="$(link-orig)" />
+                <input type="hidden" name="popup" value="true" />
+                
+                <!-- TABS: Member vs Voucher -->
+                <!-- Removed p-1 to fix grey border issue requested by user -->
+                <div class="flex bg-gray-100 dark:bg-gray-700/50 rounded-xl mb-5 relative overflow-hidden">
+                    <button type="button" id="tab-single" class="flex-1 py-2 text-sm font-medium rounded-lg transition-all text-blue-600 bg-white dark:bg-gray-700 shadow-sm" onclick="switchLoginMode('single')">
+                        Voucher
+                    </button>
+                    <button type="button" id="tab-dual" class="flex-1 py-2 text-sm font-medium rounded-lg transition-all text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" onclick="switchLoginMode('dual')">
+                        Member
+                    </button>
+                </div>
 
-					<!-- Single Input Mode (User = Password) - HIDDEN BY DEFAULT -->
-					<div id="mode-single" class="hidden mb-6 relative">
-						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-							<!-- Heroicons: Ticket (solid) -->
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
-								<path fill-rule="evenodd" d="M1.5 6.375c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v3.026a.75.75 0 0 1-.375.65 2.249 2.249 0 0 0 0 3.898.75.75 0 0 1 .375.65v3.026c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 0 1 1.5 17.625v-3.026a.75.75 0 0 1 .374-.65 2.249 2.249 0 0 0 0-3.898.75.75 0 0 1-.374-.65V6.375Zm15-1.125a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-1.5 0V6a.75.75 0 0 1 .75-.75Zm.75 4.5a.75.75 0 0 0-1.5 0v.75a.75.75 0 0 0 1.5 0v-.75Zm-.75 3a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-1.5 0v-.75a.75.75 0 0 1 .75-.75Zm.75 4.5a.75.75 0 0 0-1.5 0V18a.75.75 0 0 0 1.5 0v-.75ZM6 12a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 12Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clip-rule="evenodd" />
-							</svg>
-						</span>
-						<input id="user-eq-pass-input" type="text" value="$(username)" data-i18n-placeholder="user_eq_pass_placeholder" placeholder="User = Password" class="w-full pl-10 pr-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" autocapitalize="none" />
-					</div>
+                <div class="space-y-4">
+                    
+                    <!-- MODE: VOUCHER (User = Password) -->
+                    <div id="mode-single" class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <!-- Heroicons: ticket (solid) - username input icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-500 dark:text-gray-400">
+                                <path fill-rule="evenodd" d="M1.5 6.375c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v3.026a.75.75 0 0 1-.375.65 2.249 2.249 0 0 0 0 3.898.75.75 0 0 1 .375.65v3.026c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 0 1 1.5 17.625v-3.026a.75.75 0 0 1 .374-.65 2.249 2.249 0 0 0 0-3.898.75.75 0 0 1-.374-.65V6.375Zm15-1.125a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-1.5 0V6a.75.75 0 0 1 .75-.75Zm.75 4.5a.75.75 0 0 0-1.5 0v.75a.75.75 0 0 0 1.5 0v-.75Zm-.75 3a.75.75 0 0 1 .75.75v.75a.75.75 0 0 1-1.5 0v-.75a.75.75 0 0 1 .75-.75Zm.75 4.5a.75.75 0 0 0-1.5 0V18a.75.75 0 0 0 1.5 0v-.75ZM6 12a.75.75 0 0 1 .75-.75H12a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 12Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <input id="user-eq-pass-input" name="username" type="text" 
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl leading-5 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 sm:text-sm" 
+                            placeholder="Kode Voucher"
+                            value="$(username)" autocapitalize="none">
+                    </div>
 
-					<div class="flex items-center justify-between">
-						<input type="submit" data-i18n-value="login_btn" value="Connect" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer" />
-					</div>
+                    <!-- MODE: MEMBER (User & Password) -->
+                    <div id="mode-dual" class="hidden grid grid-cols-2 gap-1 mb-4">
+                        <!-- Username -->
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <!-- Heroicons: user (solid) - username input icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-500 dark:text-gray-400">
+                                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input id="username-input" name="username" type="text" 
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl leading-5 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 sm:text-sm" 
+                                placeholder="Username"
+                                value="$(username)" disabled autocapitalize="none">
+                        </div>
 
-					<!-- Divider -->
-					<div id="qr-divider" class="flex items-center my-4">
-						<div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-						<span class="px-3 text-gray-500 dark:text-gray-400 text-sm" data-i18n="or_divider">or</span>
-						<div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
-					</div>
+                        <!-- Password -->
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <!-- Heroicons: key (solid) - password input icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-500 dark:text-gray-400">
+                                    <path fill-rule="evenodd" d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input id="password-input-dual" name="password" type="password" 
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-xl leading-5 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 sm:text-sm" 
+                                placeholder="Password" disabled>
 
-					<!-- Scan QR Button -->
-					<button type="button" id="scan-qr-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer flex items-center justify-center gap-2">
-						<!-- Heroicons: QRCode (outline) -->
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
-						</svg>
-						<span data-i18n="scan_qr_btn">Scan QR Code</span>
-					</button>
-				</form>
-			</div>
-		</div>
+                            <button type="button" onclick="togglePasswordDual()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer z-50">
+                                <!-- Heroicons: Eye Slash (outline) - hide password -->
+                                <svg id="eye-slash-icon-dual" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                </svg>
+                                <!-- Heroicons: Eye (outline) - show password -->
+                                <svg id="eye-icon-dual" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 hidden">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
-		<!-- QR Scanner Modal -->
-		<div id="qr-scanner-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-			<div class="bg-white dark:bg-gray-800 rounded-lg max-w-sm w-full p-4 shadow-2xl">
-				<div class="flex justify-between items-center mb-4">
-					<h3 class="text-lg font-bold text-gray-800 dark:text-gray-200" data-i18n="scan_qr_title">Scan QR Code</h3>
-					<button id="qr-scanner-close" type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-						<!-- Heroicons: X Mark -->
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-						</svg>
-					</button>
-				</div>
-				<div id="qr-scanner-container" class="w-full aspect-square bg-gray-100 dark:bg-gray-900/50 rounded-md overflow-hidden flex items-center justify-center relative border-2 border-dashed border-gray-300 dark:border-gray-600">
-					<!-- Initial Placeholder SVG -->
-					<div class="text-gray-400 dark:text-gray-500 flex flex-col items-center animate-pulse">
-						<!-- Heroicons: QRCode (outline) -->
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-32 w-32 opacity-50">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
-						</svg>
-					</div>
-				</div>
-				<p id="qr-scan-status" class="text-center text-gray-500 dark:text-gray-400 my-2 text-sm" data-i18n="scanning">Point camera at QR code...</p>
-				
-				<!-- Scanner Controls -->
-				<div class="flex flex-col gap-2">
-					<!-- Toggle Camera Button -->
-					<button type="button" id="btn-toggle-camera" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none flex items-center justify-center gap-2">
-						<!-- Heroicons: Video Camera -->
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-						</svg>
-						<span id="txt-toggle-camera" data-i18n="btn_start_camera">Start Camera</span>
-					</button>
-					
-					<!-- Upload File Button -->
-					<button type="button" id="btn-upload-qr" class="w-full bg-gray-200 dark:bg-gray-700/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-xl focus:outline-none flex items-center justify-center gap-2 cursor-pointer border border-gray-400 dark:border-gray-600 border-dashed hover:border-gray-500 dark:hover:border-gray-500">
-						<!-- Heroicons: Photo -->
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-						</svg>
-						<span data-i18n="btn_upload_qr">Scan Image File</span>
-					</button>
-					<input type="file" id="inp-file-qr" accept="image/*" class="hidden" />
-				</div>
-			</div>
-		</div>
+                    <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 scale-100 active:scale-95"
+                        data-i18n="login_btn">
+                        Connect
+                    </button>
+                    
+                     <!-- TRIAL LINK MOVED HERE -->
+                    $(if trial == 'yes')
+                    <div class="mt-3">
+                         <a href="$(link-login-only)?dst=$(link-orig-esc)&username=T-$(mac-esc)" 
+                            class="w-full flex justify-center items-center gap-2 py-3 px-4 border border-blue-600 dark:border-blue-500 rounded-xl shadow-sm text-sm font-medium text-blue-600 dark:text-blue-400 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 scale-100 active:scale-95">
+                            <!-- Heroicons: gift (outline) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 1 0 9.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1 1 14.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                            </svg>
+                            <span data-i18n="login_trial_btn">Free Trial Access</span>
+                         </a>
+                         <p class="text-xs text-center text-gray-400 mt-2" data-i18n="login_trial_desc">Try our high speed internet for free.</p>
+                    </div>
+                    $(endif)
 
-		<script src="md5.js"></script>
-		<script>
-			function prepareSubmit() {
-				var savedMode = localStorage.getItem('loginMode') || 'dual';
-				
-				if (savedMode === 'single') {
-					var userEqPassInput = document.getElementById('user-eq-pass-input');
-					var val = userEqPassInput ? userEqPassInput.value.trim() : '';
-					
-					var u = document.getElementById('username-input');
-					var p = document.getElementById('password-input-dual');
-					
-					// Sync values for PAP submission
-					if (u) {
-						u.value = val;
-						u.disabled = false; // Enable so it submits
-					}
-					if (p) {
-						p.value = val;
-						p.disabled = false; // Enable so it submits
-					}
-				}
 
-				// If CHAP is enabled (sendin form exists), use doLogin
-				if (document.sendin) {
-					return doLogin();
-				}
-				
-				// Otherwise proceed with standard submit (PAP)
-				return true;
-			}
 
-			function doLogin() {
-				// Get mode from localStorage (most reliable)
-				var savedMode = localStorage.getItem('loginMode') || 'dual';
-				
-				var userVal = '';
-				var passVal = '';
+                </div>
+            </form>
+        </section>
 
-				if (savedMode === 'single') {
-					// Single Mode (User = Password)
-					var userEqPassInput = document.getElementById('user-eq-pass-input');
-					userVal = userEqPassInput ? userEqPassInput.value.trim() : '';
-					passVal = userVal;
-				} else {
-					// Dual Mode (User & Password)
-					var usernameInput = document.getElementById('username-input');
-					var passwordInputDual = document.getElementById('password-input-dual');
-					userVal = usernameInput ? usernameInput.value.trim() : '';
-					passVal = passwordInputDual ? passwordInputDual.value : '';
-				}
+        <!-- VOUCHER LIST (Injected by sections.js) -->
+        <div id="voucher-list-placeholder"></div>
 
-				document.sendin.username.value = userVal;
-				document.sendin.password.value = hexMD5('$(chap-id)' + passVal + '$(chap-challenge)');
-				document.sendin.submit();
-				return false;
-			}
-		</script>
+        <!-- FOOTER (Injected by sections.js) -->
+        <div id="footer-placeholder"></div>
 
-		<script>
-		// Tab switching logic
-		function switchLoginMode(mode) {
-			const tabSingle = document.getElementById('tab-single');
-			const tabDual = document.getElementById('tab-dual');
-			const modeSingle = document.getElementById('mode-single');
-			const modeDual = document.getElementById('mode-dual');
-			const userEqPassInput = document.getElementById('user-eq-pass-input');
-			const usernameInput = document.getElementById('username-input');
-			const passwordInputDual = document.getElementById('password-input-dual');
+    </main>
 
-			if (mode === 'single') {
-				// Activate single mode tab
-				tabSingle.className = 'flex-1 py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none';
-				tabDual.className = 'flex-1 py-2 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent focus:outline-none';
-				
-				// Show single, hide dual
-				modeSingle.classList.remove('hidden');
-				modeDual.classList.add('hidden');
-				
-				// Enable single input, disable dual inputs
-				userEqPassInput.disabled = false;
-				usernameInput.disabled = true;
-				passwordInputDual.disabled = true;
+    <!-- Bottom Navbar will be injected by navbars.js -->
+    
+    <script>
+        // Tab switching logic
+        function switchLoginMode(mode) {
+            const tabSingle = document.getElementById('tab-single');
+            const tabDual = document.getElementById('tab-dual');
+            const modeSingle = document.getElementById('mode-single');
+            const modeDual = document.getElementById('mode-dual');
+            const userEqPassInput = document.getElementById('user-eq-pass-input');
+            const usernameInput = document.getElementById('username-input');
+            const passwordInputDual = document.getElementById('password-input-dual');
+            const loginTitle = document.getElementById('login-title');
 
-				// Save preference
-				localStorage.setItem('loginMode', 'single');
-			} else {
-				// Activate dual mode tab
-				tabDual.className = 'flex-1 py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none';
-				tabSingle.className = 'flex-1 py-2 px-4 font-medium text-gray-500 dark:text-gray-400 border-b-2 border-transparent focus:outline-none';
-				
-				// Show dual, hide single
-				modeDual.classList.remove('hidden');
-				modeSingle.classList.add('hidden');
-				
-				// Disable single input, enable dual inputs
-				userEqPassInput.disabled = true;
-				usernameInput.disabled = false;
-				passwordInputDual.disabled = false;
+            if (mode === 'single') {
+                // Activate single mode tab
+                if(loginTitle) {
+                    loginTitle.setAttribute('data-i18n', 'title_voucher');
+                    // Refresh translation immediately if app.js is loaded
+                    if (typeof window.applyTranslations === 'function' && typeof window.getCurrentLang === 'function') {
+                        window.applyTranslations(window.getCurrentLang());
+                    } else {
+                        loginTitle.textContent = 'Login Voucher';
+                    }
+                }
+                if(tabSingle) {
+                    tabSingle.classList.remove('bg-white', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400');
+                    tabSingle.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                }
+                if(tabDual) {
+                    tabDual.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                    tabDual.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+                }
+                
+                // Show single, hide dual
+                if(modeSingle) modeSingle.classList.remove('hidden');
+                if(modeDual) modeDual.classList.add('hidden');
+                
+                // Enable single input, disable dual inputs
+                if(userEqPassInput) userEqPassInput.disabled = false;
+                if(usernameInput) usernameInput.disabled = true;
+                if(passwordInputDual) passwordInputDual.disabled = true;
 
-				// Save preference
-				localStorage.setItem('loginMode', 'dual');
-			}
-		}
+                // Save preference
+                localStorage.setItem('loginMode', 'single');
+            } else {
+                // Activate dual mode tab
+                if(loginTitle) {
+                    loginTitle.setAttribute('data-i18n', 'title_member');
+                    // Refresh translation immediately if app.js is loaded
+                    if (typeof window.applyTranslations === 'function' && typeof window.getCurrentLang === 'function') {
+                        window.applyTranslations(window.getCurrentLang());
+                    } else {
+                        loginTitle.textContent = 'Login Member';
+                    }
+                }
+                if(tabDual) {
+                    tabDual.classList.remove('bg-white', 'dark:bg-gray-700', 'text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+                    tabDual.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+                }
+                if(tabSingle) {
+                    tabSingle.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                    tabSingle.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-700', 'dark:hover:text-gray-200');
+                }
+                
+                // Show dual, hide single
+                if(modeDual) modeDual.classList.remove('hidden');
+                if(modeSingle) modeSingle.classList.add('hidden');
+                
+                // Disable single input, enable dual inputs
+                if(userEqPassInput) userEqPassInput.disabled = true;
+                if(usernameInput) usernameInput.disabled = false;
+                if(passwordInputDual) passwordInputDual.disabled = false;
 
-		// Initialize Login Mode from LocalStorage
-		document.addEventListener('DOMContentLoaded', () => {
-			const savedMode = localStorage.getItem('loginMode');
-			if (savedMode === 'single') {
-				switchLoginMode('single');
-			} else {
-				switchLoginMode('dual'); // Default
-			}
-		});
+                // Save preference
+                localStorage.setItem('loginMode', 'dual');
+            }
+        }
 
-		// Password toggle for dual mode
-		const passwordInputDual = document.getElementById('password-input-dual');
-		const togglePasswordBtnDual = document.getElementById('toggle-password-btn-dual');
-		const eyeIconShowDual = document.getElementById('eye-icon-show-dual');
-		const eyeIconHideDual = document.getElementById('eye-icon-hide-dual');
 
-		if (togglePasswordBtnDual) {
-			togglePasswordBtnDual.addEventListener('click', function () {
-				const type = passwordInputDual.getAttribute('type') === 'password' ? 'text' : 'password';
-				passwordInputDual.setAttribute('type', type);
-				eyeIconShowDual.classList.toggle('hidden');
-				eyeIconHideDual.classList.toggle('hidden');
-			});
-		}
+        // --- Login Logic (Replicated from Custom-Home) ---
+        
+        function prepareSubmit() {
+            var savedMode = localStorage.getItem('loginMode') || 'dual';
+            
+            if (savedMode === 'single') {
+                var userEqPassInput = document.getElementById('user-eq-pass-input');
+                var val = userEqPassInput ? userEqPassInput.value.trim() : '';
+                
+                var u = document.getElementById('username-input');
+                var p = document.getElementById('password-input-dual');
+                
+                // Sync values for PAP submission
+                if (u) {
+                    u.value = val;
+                    u.disabled = false; // Enable so it submits
+                }
+                if (p) {
+                    p.value = val;
+                    p.disabled = false; // Enable so it submits
+                }
+            }
 
-		// Auto-fill password - DEPRECATED/REMOVED
-		// Logic is now handled securely in doLogin()
-		const userEqPassInput = document.getElementById('user-eq-pass-input');
-		if (userEqPassInput) {
-			// Disable single input by default (dual mode is default)
-			userEqPassInput.disabled = true;
-		}
-	</script>
+            // If CHAP is enabled (sendin form exists), use doLogin
+            if (document.sendin) {
+                return doLogin();
+            }
+            
+            // Otherwise proceed with standard submit (PAP)
+            return true;
+        }
 
-		<!-- Configuration Script -->
-		<script src="js/config.js"></script>
+        function doLogin() {
+            // Get mode from localStorage (most reliable)
+            var savedMode = localStorage.getItem('loginMode') || 'dual';
+            
+            var userVal = '';
+            var passVal = '';
 
-		<!-- QR Scanner Scripts -->
-		<script src="js/html5-qrcode.min.js"></script>
-		<script src="js/qr-scanner.js"></script>
+            if (savedMode === 'single') {
+                // Single Mode (User = Password)
+                var userEqPassInput = document.getElementById('user-eq-pass-input');
+                userVal = userEqPassInput ? userEqPassInput.value.trim() : '';
+                passVal = userVal;
+            } else {
+                // Dual Mode (User & Password)
+                var usernameInput = document.getElementById('username-input');
+                var passwordInputDual = document.getElementById('password-input-dual');
+                userVal = usernameInput ? usernameInput.value.trim() : '';
+                passVal = passwordInputDual ? passwordInputDual.value : '';
+            }
 
-		<script src="js/app.js"></script>
-	</body>
+            document.sendin.username.value = userVal;
+            document.sendin.password.value = hexMD5('$(chap-id)' + passVal + '$(chap-challenge)');
+            document.sendin.submit();
+            return false;
+        }
+
+        // Helper to get correct login values based on active mode
+        window.getLoginValues = function() {
+            var mode = localStorage.getItem('loginMode') || 'dual';
+            var u = '';
+            var p = '';
+
+            if (mode === 'single') {
+                var val = document.getElementById('user-eq-pass-input').value;
+                u = val;
+                p = val;
+            } else {
+                u = document.getElementById('username-input').value;
+                var passInput = document.getElementById('password-input-dual');
+                p = passInput ? passInput.value : '';
+            }
+            return {username: u, password: p};
+        };
+
+        // Initialize Login Mode from LocalStorage
+        document.addEventListener('DOMContentLoaded', () => {
+             const savedMode = localStorage.getItem('loginMode');
+             if (savedMode === 'single') {
+                 switchLoginMode('single');
+             } else {
+                 switchLoginMode('dual'); // Default
+             }
+         });
+ 
+        // Password Toggle Logic (User requested: Initial = Eye Slash, Show = Eye)
+        function togglePasswordDual() {
+            var x = document.getElementById("password-input-dual");
+            var iconEye = document.getElementById("eye-icon-dual");
+            var iconSlash = document.getElementById("eye-slash-icon-dual");
+
+            if (x.type === "password") {
+                x.type = "text";
+                // When visible: Show Eye, Hide Eye Slash
+                iconEye.classList.remove("hidden");
+                iconSlash.classList.add("hidden");
+            } else {
+                x.type = "password";
+                // When hidden: Hide Eye, Show Eye Slash (Default)
+                iconEye.classList.add("hidden");
+                iconSlash.classList.remove("hidden");
+            }
+        }
+    </script>
+
+    <!-- Modal functions are now in js/modals.js -->
+
+    <!-- Modals are now injected by js/modals.js -->
+    
+    <!-- Scripts -->
+    <script src="md5.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/html5-qrcode.min.js"></script>
+    <script src="js/qr-scanner.js"></script>
+    <script src="js/navbars.js"></script>
+    <script src="js/sections.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/app.js"></script>
+</body>
 </html>
